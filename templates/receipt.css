@@ -1,0 +1,58 @@
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm 14mm 14mm;
+  @bottom-right { content: "หน้า " counter(page) "/" counter(pages); font-size: 7pt; color: #888; }
+}
+body { font-family: "Sarabun", "Noto Sans Thai", "Leelawadee UI", sans-serif; font-size: 8.5pt; color: #111; line-height: 1.35; }
+.watermark {
+  position: fixed; top: 95mm; left: 0; width: 100%; text-align: center;
+  font-size: 150pt; font-weight: 700; color: #f3c9c9; transform: rotate(-30deg); z-index: -1;
+}
+
+.top { display: flex; justify-content: space-between; align-items: flex-start; }
+.shop-name { font-size: 12pt; font-weight: 700; }
+.title { text-align: right; }
+.big-title { font-size: 22pt; font-weight: 700; color: #555; margin-bottom: 8mm; }
+.meta { font-size: 8.5pt; }
+
+.parties { display: flex; margin-top: 7mm; }
+.parties > div { width: 50%; padding-right: 4mm; }
+.label { font-weight: 700; }
+.comments { margin: 8mm 0 12mm 0; }
+
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 0.6pt solid #444; padding: 1.2mm 2mm; }
+th { font-weight: 700; text-align: center; }
+
+.terms { margin-bottom: 5mm; }
+.terms td { height: 9mm; vertical-align: top; }
+.terms td.small { font-size: 7.5pt; }
+
+.items thead { display: table-header-group; }
+.items tr { page-break-inside: avoid; }
+.items td { padding-top: 0.7mm; padding-bottom: 0.7mm; }
+.items .qty { width: 16%; text-align: center; }
+.items .billno { width: 9%; text-align: center; }
+.note { font-weight: 400; color: #a33; margin-left: 2mm; }
+.items .desc { text-align: left; }
+.items th.desc { text-align: center; }
+.items .price { width: 14%; text-align: center; }
+.items .amount { width: 11%; text-align: right; }
+.items th.amount { text-align: center; }
+
+.closing { page-break-inside: avoid; }
+.totals { width: auto; margin-left: auto; }
+.totals th { border: none; text-align: right; font-weight: 400; padding-right: 3mm; }
+.totals th.strong { font-weight: 700; }
+.totals th, .totals td { padding-top: 0.7mm; padding-bottom: 0.7mm; }
+.totals td.boxed { width: 22mm; min-width: 22mm; text-align: right; height: 4mm; }
+.totals td.strong { font-weight: 700; }
+.totals td.tiny { font-size: 6pt; text-align: left; }
+.baht-text { text-align: right; margin-top: 2mm; }
+
+.bottom { margin-top: 6mm; }
+.thanks { text-align: center; font-weight: 700; margin-bottom: 4mm; }
+.signs { display: flex; justify-content: space-between; }
+.sign { width: 45mm; }
+.sign.right { text-align: right; }
+.sign .line { border-bottom: 0.6pt solid #444; height: 5mm; }

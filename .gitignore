@@ -1,0 +1,28 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Working data (generated / customer data)
+work/
+output/
+input/
+.DS_Store
+master/*.bak.xlsx
+
+# Business/customer data — never push (repo is public)
+data/
+ref_docs/
+config/settings.yaml
+master/products.xlsx
+master/aliases.xlsx
+master/aliases.*.xlsx
+master/history.csv
+tests/fixtures/*.csv
+2026-09-30-line-order-to-receipt-plan.md

@@ -1,0 +1,37 @@
+# ตัวอย่างการตั้งค่า — คัดลอกเป็น config/settings.yaml แล้วแก้ข้อมูลจริง
+# (settings.yaml ไม่ถูก commit เพราะมีข้อมูลลูกค้า)
+
+shop:
+  name: ชื่อร้าน
+  address_lines:
+    - ที่อยู่ร้าน
+    - "00000"
+
+customer:
+  name: ชื่อบริษัทลูกค้า
+  address_lines:
+    - ที่อยู่ลูกค้า
+    - "00000"
+  tax_id: "0000000000000"
+  # ถ้าที่อยู่จัดส่งต่างจากที่อยู่ลูกค้า ให้ใส่ ship_to แยก (โครงสร้างเดียวกับ customer)
+  ship_to: null
+
+billing:
+  mode: by_period           # single | by_period | by_max_lines
+  max_lines_per_bill: 0     # ใช้กับ by_period / by_max_lines (0 = ไม่จำกัด บิลเดียวหลายหน้า)
+  period_days: 7            # ใช้กับ by_period
+  period_anchor: month      # month = ตัดตามวันที่ 1–7, 8–14, 15–21, 22–28, 29–สิ้นเดือน | first = นับจากออเดอร์แรกของรอบ
+  bill_date: first          # วันที่บนบิล: first = ออเดอร์แรกในบิล (แบบใบเสร็จเดิม) | last = ออเดอร์ล่าสุด
+  monthly_summary: true     # สร้างใบสรุปทั้งเดือน (ไม่ใช้เลขที่ใบเสร็จ) เพิ่มจากบิลรายรอบ
+  bill_time: "18.00"
+  merge_same_item: false    # true = รวมรายการซ้ำในบิลเดียวเป็นบรรทัดเดียว
+  terms: ครบกำหนดเมื่อได้รับ
+  print_bahttext: false     # แสดงยอดเงินเป็นตัวอักษรใต้ยอดรวม
+
+pdf:
+  font_family: Sarabun      # ต้องติดตั้งในเครื่อง หรือวางไฟล์ .ttf ไว้ใน templates/fonts/
+
+paths:
+  # ไฟล์แชทเริ่มต้น ถ้าไม่มี input/<เดือน>/line_export.txt และไม่ได้ส่ง --chat
+  default_chat: "data/line_export.txt"
+  price_docx: ref_docs/ตารางราคากลาง.docx

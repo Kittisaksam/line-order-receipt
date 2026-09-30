@@ -1,0 +1,197 @@
+# พจนานุกรมสำหรับ normalize ข้อความ LINE และชื่อสินค้า (ใช้ฟังก์ชันเดียวกันทั้ง 2 ฝั่ง)
+# แก้ไฟล์นี้ได้เลย ไม่ต้องแก้โค้ด — รัน `uv run arma prepare <เดือน>` ใหม่เพื่อใช้ค่าใหม่
+
+# 1) แก้คำสะกดผิด (regex, ทำหลัง lowercase และก่อนทุกอย่าง)
+typo:
+  hirux: hilux
+  hilax: hilux
+  hirox: hilux
+  colona: corolla
+  collola: corolla
+  corola: corolla
+  "trava(?!\\w)": travo
+  stromtrak: stormtrak
+  stromtrack: stormtrak
+  stormtrack: stormtrak
+  perfprmance: performance
+  landcrusier: land cruiser
+  landcruiser: land cruiser
+  "land crusier": land cruiser
+  เอฟเจ: fj
+  เทสล่า: tesla
+  "หัวชา[ตร]์?จ?": หัวชาร์จ
+  สามมิล: 3 มิล
+  หนึ่งมิล: 1 มิล
+  โตโยต้า: toyota
+  "โคร?เม[ื่ี]่?ยม": เงิน
+  "โคว?เม[ื่ี]่?ยม": เงิน
+  "ตัวเล[้็]ก": เล็ก
+  "เล้ก": เล็ก
+  "ตัวใหย่": ใหญ่
+  "ใหย่": ใหญ่
+  "ตัวใหญ่": ใหญ่
+  "ชิ้นใหญ่": ใหญ่
+  "หัวเกีย(?!ร์)": หัวเกียร์
+  "กรองแอร(?!์)": กรองแอร์
+  รูปลั้ก: รูปลั๊ก
+  ท้ารถ: ท้ายรถ
+  ใข้: ใช้
+  "ครั[บง]": ""
+  "จ้า+": ""
+
+# 2) คำศัพท์ของแต่ละคุณลักษณะ: ค่ามาตรฐาน → คำที่อาจพบ
+#    - จับคำที่ยาวที่สุดก่อน (เช่น "มือจับท้าย" ก่อน "ท้าย")
+#    - คำที่มีตัวอักษรอังกฤษ/ตัวเลข ต้องไม่ติดกับอักษรอังกฤษ/ตัวเลขอื่น
+#    - ขึ้นต้นด้วย "re:" = regex
+vocab:
+  model:
+    yaris cross: [yaris cross]
+    yaris ativ: [yaris ativ, ativ]
+    corolla cross: [corolla cross]
+    travo: [travo]
+    hilux: [hilux, revo]
+    camry: [camry]
+    land cruiser: [land cruiser, landcruiser]
+    fj: [fj]
+    fortuner: [fortuner legender, fortuner, legender]
+    alphard: [alphard]
+    ranger: [ranger]
+    raptor: [raptor]
+    everest: [everest]
+    everest platinum: [everest platinum, platinum]
+    wildtrak: [wildtrak, wildtrack]
+    stormtrak: [stormtrak]
+    next-gen: [next-gen, next gen, nextgen]
+    ford performance: [ford performance]
+    m performance: [m performance]
+    civic type r: [civic type r, type-r, type r, typer]
+    amg: [amg]
+    trd: [trd]
+    gr sport: [gr sport]
+    bmw: [bmw]
+    mg: [mg]
+    morris garages: [morris garages]
+    tesla: [tesla]
+    byd: [byd, build your dreams]
+    honda: [honda]
+    gwm tank: [gwm tank, tank]
+    gwm: [gwm]
+    geely: [geely]
+    xpeng: [xpeng]
+    cherry: [cherry, chery]
+    deepal: [deepal]
+    aion: [aion y plus, aion]
+    dolphin: [dolphin]
+    โลมา: [ตัวโลมา, โลมา]
+  brand:
+    toyota: [toyota]
+    ford: [ford]
+  part:
+    ฝากระโปรงหน้า: [ฝากระโปรงหน้า, กระโปรงหน้า, คอนโซลหน้า, คอนโซล, console, หน้ารถ, หน้า, hood]
+    ฝากระโปรงท้าย: [ฝากระโปรงท้าย, กระโปรงท้าย]
+    ท้ายกระบะ: [ท้ายกระบะ, กระบะท้าย, ติดท้ายรถ, ท้ายรถ, ท้าย, หลัง]
+    กระจังหน้า: [กระจังหน้า, กระจัง, grille]
+    มือจับท้าย: [มือจับท้าย, มือเปิดกระบะท้าย, มือเปิดท้าย, มือเปิด, มือจับ]
+    พรบ: [กรอบ พรบ, กรอบพรบ, พรบ., พรบ, พ.ร.บ.]
+    ข้างรถ: [ข้างรถ, ข้าง]
+    หัวเกียร์: [หัวเกียร์]
+    กรองแอร์: [กรองแอร์]
+    ตะแกรงแตร: [ตะแกรงแตร]
+    ตะแกรง: [ตะแกรง]
+    แก้ว: [เลเซอร์แก้ว, แก้ว]
+    หัวชาร์จ: [หัวชาร์จ]
+    easy pass: [easy pass, easypass]
+    ตกแต่ง: [ตกแต่งรถ]
+  logo:
+    gr: [gr]
+    r: [r]
+    performance: [performance]
+    v6: [v6]
+  size:
+    ใหญ่: [ใหญ่, big, 33 ซม, 33ซม, 33cm, 33 cm]
+    เล็ก: [เล็ก, small, 28 ซม, 28ซม, 28cm, 28 cm]
+  style:
+    style 1: [style 1, style1, s1, รูปลั๊ก, ตัวนอก]
+    style 2: [style 2, style2, s2, ตัวธรรมดา]
+  thickness:
+    1 mm: [1 mm., 1 mm, 1mm., 1mm, 1 มิล, 1มิล]
+    3 mm: [3 mm., 3 mm, 3mm., 3mm, 3 มิล, 3มิล]
+  category:
+    3d_print: [3d ปริ้น, 3d ปริ้นท์, 3d print, 3d]
+  color:
+    ดำเงา-แดง: [ดำเงา-แดง, ดำแดง]
+    น้ำเงิน-แดง: [น้ำเงิน-แดง, น้ำเงินแดง]
+    ดำเงา-เงิน: [ดำเงา-เงิน]
+    เคฟล่าเงา: [เคฟล่าเงา, เคฟล่า เงา]
+    เคฟล่าด้าน: [เคฟล่าด้าน, เคฟล่า ด้าน]
+    ดำเงา: [ดำเงา, ดำ เงา, "re:ดำ(?!ด้าน| ด้าน)"]
+    ดำด้าน: [ดำด้าน, ดำ ด้าน]
+    แดง: [แดง, red]
+    ขาว: [ขาว, white]
+    เงิน: [เงิน, silver]
+    ทอง: [ทอง, gold]
+    ใสไม่มีลาย: [ใสไม่มีลาย, ไม่มีลาย, "re:ใส(?![่้])"]
+    ใสมีลาย: [ใสมีลาย, มีลาย]
+
+# สีที่ถือเป็นค่าเริ่มต้นเมื่อข้อความไม่ระบุสี (ไม่หักคะแนน)
+neutral_colors: [ใสมีลาย]
+
+# 3) กฎเติมค่าที่ขาดจากบริบท (ใช้หลังดึงคุณลักษณะ ตามลำดับ)
+#    เงื่อนไข: null = ต้องว่าง, "*" = ต้องมีค่า, ค่า/ลิสต์ = ต้องมีค่าใดค่าหนึ่ง (ใส่ null ในลิสต์ = ว่างก็ได้)
+rules:
+  - when: {model: hilux, part: [null, ท้ายกระบะ]}
+    set: {part: มือจับท้าย}
+  - when: {brand: toyota, model: null, logo: null, thickness: null, part: [null, ท้ายกระบะ]}
+    set: {model: travo, part: ท้ายกระบะ}
+  - when: {model: null, logo: [r, performance], part: [null, กระจังหน้า]}
+    set: {model: raptor, part: กระจังหน้า}
+  - when: {logo: gr, part: null, model: "*"}
+    set: {part: กระจังหน้า}
+  - when: {model: land cruiser, color: null, logo: null}
+    set: {color: ดำเงา}
+
+# 4) การดึงจำนวน
+units: [ชิ้น, ชุด, อัน, ตัว, คู่, แผ่น, pcs]
+# ตัวเลขที่เป็นส่วนหนึ่งของชื่อสินค้า ห้ามนำไปเป็นจำนวน
+protect:
+  - "\\d+\\s*(?:mm|มิล|ซม|cm)\\.?"
+  - "(?<!\\d)20\\d\\d(?!\\d)"
+  - "v6"
+  - "x2"
+  - "3d"
+  - "style\\s*\\d"
+  - "(?<![a-z])s\\d(?!\\d)"
+  - "\\d+(?:\\.\\d+)?\\s*บาท"
+  - "\\d+\\s*-\\s*\\d+"
+  - "ละ\\s*\\d+"
+# วลีที่ตัดทิ้งก่อนดึงจำนวน (regex)
+drop_phrases:
+  - "ใช้ก่อน\\S*\\s*\\d*\\s*(?:ชิ้น|ชุด|อัน|ตัว)?"
+  - "ใช้วัน\\S*"
+  - "ขอก่อน\\S*"
+  - "ขอภายใน\\S*"
+  - "ส่งรถมารับ.*"
+  - "เดี๋ยวเรียกรถ.*"
+  - "เรียกรถ.*"
+  - "^\\s*สั่ง(?:ของ|ตัด)?\\s*"
+  - "^\\s*[-•*]\\s*"
+  - "กาว\\S*"
+  - "หน่อย\\S*"
+  - "นะ\\S*"
+
+# จำนวนเกินนี้ ต้องให้คนยืนยัน (มักเป็นราคาที่ถูกอ่านเป็นจำนวน)
+max_auto_qty: 100
+# ตัวเลขไทยที่เขียนเป็นคำ (ใช้เมื่อตามด้วยหน่วย เช่น "หนึ่งชุด")
+thai_numbers: {หนึ่ง: 1, สอง: 2, สาม: 3, สี่: 4, ห้า: 5, หก: 6, เจ็ด: 7, แปด: 8, เก้า: 9, สิบ: 10}
+
+# 5) การจัดประเภทข้อความ
+non_order_markers: [อัพเดทราคา, ราคาใหม่, อันละ, คู่ละ, ชิ้นละ, ชุดละ, เข้าไปแล้ว, ให้แล้ว, เคลียร์บิล, "https://", "http://", Lot เดือน, รบกวน, ติดตามสถานะ, หมายเลขพัสดุ, คอมเพลน, ขอเบอร์]
+claim_markers: [เคลม]
+shipping_fee: "ค่าส่ง\\s*(\\d+(?:\\.\\d+)?)\\s*บาท"
+# ค่าออกแบบ/ทำไฟล์ → บรรทัด "งานออกแบบและสั่งทำไฟล์ <เรื่อง>" ราคาตามข้อความ
+design_fee:
+  markers: "ออกแบบ|ค่าทำไฟล์|ทำไฟล์|ปริ[้]?นต์|ปริ้น"
+  amount: "(\\d[\\d,]*(?:\\.\\d+)?)\\s*บาท"
+# วลีในข้อความที่ต้องพิมพ์ต่อท้ายชื่อสินค้าในใบเสร็จ (regex บนข้อความที่ normalize แล้ว)
+note_phrases:
+  - "กาว\\S+"

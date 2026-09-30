@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>{% if summary %}{{ summary.title }}{% else %}ใบเสร็จรับเงิน #{{ bill.no }}{% endif %}</title>
+<style>{{ css | safe }}</style>
+</head>
+<body>
+{% if draft %}<div class="watermark">ร่าง</div>{% endif %}
+<header class="top">
+  <div class="shop">
+    <div class="shop-name">{{ shop.name }}</div>
+    {% for line in shop.address_lines %}<div>{{ line }}</div>{% endfor %}
+  </div>
+  <div class="title">
+  {% if summary %}
+    <div class="big-title">{{ summary.title }}</div>
+    <div class="meta">{{ summary.subtitle }}</div>
+    <div class="meta">ครอบคลุมใบเสร็จ {{ summary.covers }}</div>
+    <div class="meta">ช่วงวันที่ {{ summary.period }}</div>
+  {% else %}
+    <div class="big-title">ใบเสร็จรับเงิน</div>
+    <div class="meta">ใบเสร็จรับเงิน #{{ bill.no }}</div>
+    <div class="meta">เวลา:{{ bill.time }}น. วันที่ {{ date_th }}</div>
+  {% endif %}
+  </div>
+</header>
+
+<section class="parties">
+  <div>
+    <div class="label">ถึง:</div>
+    <div>{{ customer.name }}</div>
+    {% for line in customer.address_lines %}<div>{{ line }}</div>{% endfor %}
+    {% if customer.tax_id %}<div>เลขประจำตัวผู้เสียภาษี : {{ customer.tax_id }}</div>{% endif %}
+  </div>
+  <div>
+    <div class="label">จัดส่งไปยัง:</div>
+    <div>{{ ship_to.name }}</div>
+    {% for line in ship_to.address_lines %}<div>{{ line }}</div>{% endfor %}
+    {% if ship_to.tax_id %}<div>เลขประจำตัวผู้เสียภาษี : {{ ship_to.tax_id }}</div>{% endif %}
+  </div>
+</section>
+
+<div class="label comments">ข้อคิดเห็นหรือคำแนะนำพิเศษ:{% if summary %} <span class="note">เอกสารสรุปเพื่อตรวจสอบ ไม่ใช่ใบเสร็จรับเงิน</span>{% endif %}</div>
+
+{% if not summary %}
+<table class="terms">
+  <thead><tr>
+    <th>พนักงานขาย</th><th>P.O. หมายเลข</th><th>ผู้จัดหาวัตถุดิบ</th>
+    <th>ส่งผ่านทาง</th><th>F.O.B. จุด</th><th>ข้อตกลง</th>
+  </tr></thead>
+  <tbody><tr><td></td><td></td><td></td><td></td><td></td><td class="small">{{ terms }}</td></tr></tbody>
+</table>
+{% endif %}
+
+<table class="items">
+  <thead><tr>
+    {% if summary %}<th class="billno">ใบเสร็จ</th>{% endif %}
+    <th class="qty">จำนวน</th><th class="desc">คำอธิบาย</th>
+    <th class="price">ราคาต่อหน่วย</th><th class="amount">ผลรวม</th>
+  </tr></thead>
+  <tbody>
+  {% for billno, ln in rows %}
+    <tr>
+      {% if summary %}<td class="billno">#{{ billno }}</td>{% endif %}
+      <td class="qty">{{ ln.qty_display }}</td>
+      <td class="desc">{{ ln.description }}</td>
+      <td class="price">{{ money(ln.unit_price) }}</td>
+      <td class="amount">{{ money(ln.amount) }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<div class="closing">
+<div class="totals-wrap">
+<table class="totals">
+  {% if summary %}
+  {% for b in summary.bills %}<tr><th>ใบเสร็จ #{{ b.no }} ({{ fmt_date(b.date) }})</th><td class="boxed">{{ money(b.subtotal) }}</td></tr>{% endfor %}
+  <tr><th class="strong">ยอดรวมทั้งเดือน</th><td class="boxed strong">{{ money(bill.subtotal) }}</td></tr>
+  {% else %}
+  <tr><th class="strong">ยอดรวม</th><td class="boxed strong">{{ money(bill.subtotal) }}</td></tr>
+  <tr><th>ภาษีขาย</th><td class="boxed"></td></tr>
+  <tr><th>การขนส่งและการจัดการ</th><td class="boxed tiny">{{ date_th }}</td></tr>
+  <tr><th>วันครบกำหนดทั้งหมด</th><td class="boxed"></td></tr>
+  {% endif %}
+</table>
+{% if baht_text %}<div class="baht-text">({{ baht_text }})</div>{% endif %}
+</div>
+
+{% if not summary %}
+<footer class="bottom">
+  <div class="thanks">ขอบคุณที่ร่วมทำธุรกิจกับเรา!</div>
+  <div class="signs">
+    <div class="sign"><div>ผู้จ่าย</div><div class="line"></div></div>
+    <div class="sign right"><div>ผู้รับ</div><div class="line"></div></div>
+  </div>
+</footer>
+{% endif %}
+</div>
+</body>
+</html>

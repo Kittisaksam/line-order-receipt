@@ -36,12 +36,25 @@ uv run arma prepare 2569-10
 #    - เพิ่มแถวเองได้ (ออเดอร์ทางโทรศัพท์/สั่งเป็นไฟล์): ใส่ วันที่ (dd/mm/2569) ข้อความ จำนวน product_id
 #    - บันทึกกลับเป็น CSV UTF-8 และห้ามแก้แถวหัวตาราง
 
-# 4) ดูร่างก่อน (เลข #DRAFT + ลายน้ำ, ไม่เปลี่ยนเลขที่/alias)
+# 4) ดูร่างก่อน (เลข #DRAFT + ลายน้ำ, ไม่เปลี่ยนเลขที่/alias) → output/2569-10/drafts/
 uv run arma finalize 2569-10 --dry-run
 
 # 5) ออกบิลจริง: เลขที่รันต่อจาก config/receipt_counter.json, เรียนรู้ alias ใหม่
 uv run arma finalize 2569-10
-# → output/2569-10/YYYY-MM-DD-arma-receipts-2569-10.pdf + ข้อความสรุป Lot สำหรับส่ง LINE
+# → output/2569-10/1-send/YYYY-MM-DD-arma-receipts-2569-10.pdf + ข้อความสรุป Lot สำหรับส่ง LINE
+#   ทุก PDF มี .docx คู่กัน ให้ admin แก้ใน Word ได้
+#   — แก้ใน Word ไม่ย้อนกลับเข้าระบบ ถ้าแก้รายการ/ราคา ให้แก้ review.csv ด้วยแล้ว `uv run arma reprint 2569-10`
+```
+
+## โครงสร้าง output
+
+```
+output/<เดือน>/
+├── 1-send/       ใบเสร็จรวม + ใบสรุปเดือน (.pdf + .docx) ← ไฟล์ที่ส่งลูกค้า
+├── 2-receipts/   receipt_<เลขที่>.pdf/.docx แยกทีละบิล
+├── 3-review/     รายการที่ไม่แน่ใจ ให้ admin ตรวจ (.pdf/.docx/.md)
+├── drafts/       ผลจาก --dry-run
+└── archive/<วันที่>/  ชุดเดิมที่ถูกแทน — `finalize --force` ย้ายให้อัตโนมัติ (พร้อม review.csv + finalized.json ของชุดนั้น)
 ```
 
 ## วัดผล / ทดสอบ

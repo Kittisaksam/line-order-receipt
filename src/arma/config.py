@@ -14,6 +14,33 @@ import yaml
 SETTINGS_FILES = ("settings.yaml", "settings.example.yaml")
 
 
+@dataclass(frozen=True)
+class MonthOutput:
+    """โครงสร้าง output/<เดือน>/ — ไฟล์ส่งลูกค้าแยกจากใบเสร็จรายบิล งานตรวจ ร่าง และชุดที่ถูกแทน"""
+
+    root: Path
+
+    @property
+    def send(self) -> Path:  # ใบเสร็จรวม + ใบสรุปเดือน (ส่งลูกค้า)
+        return self.root / "1-send"
+
+    @property
+    def receipts(self) -> Path:  # receipt_<no>.pdf/.docx
+        return self.root / "2-receipts"
+
+    @property
+    def review(self) -> Path:  # รายการที่ไม่แน่ใจ ให้ admin ตรวจ
+        return self.root / "3-review"
+
+    @property
+    def drafts(self) -> Path:  # ผล --dry-run
+        return self.root / "drafts"
+
+    @property
+    def archive(self) -> Path:  # archive/<วันที่ออกบิลชุดเดิม>/
+        return self.root / "archive"
+
+
 def find_root(start: Path | None = None) -> Path:
     """หาโฟลเดอร์โปรเจกต์: $ARMA_HOME หรือไล่ขึ้นไปจนเจอ config/settings.yaml"""
     if env := os.environ.get("ARMA_HOME"):
@@ -78,6 +105,9 @@ class Project:
 
     def output_dir(self, month: str) -> Path:
         return self.root / "output" / month
+
+    def output(self, month: str) -> MonthOutput:
+        return MonthOutput(self.output_dir(month))
 
     def chat_path(self, month: str, override: Path | None = None) -> Path:
         if override:

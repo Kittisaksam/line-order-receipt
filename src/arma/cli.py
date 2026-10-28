@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import calendar
 import json
+import shutil
 from datetime import date, datetime
 from pathlib import Path
 from typing import Annotated, Optional
@@ -15,7 +16,8 @@ from . import backtest as bt
 from . import pipeline
 from .billing import BillingConfig, BillLine, assign_numbers, make_bills, read_counter, write_counter
 from .build_master import build_products, build_seed_aliases, write_xlsx
-from .config import Project
+from .config import MonthOutput, Project
+from .render_docx import DocxRenderer
 from .render_pdf import Renderer, merge_pdfs
 from .review import (
     ReviewError, append_history, display_name, learn_aliases, read_review, write_products_list, write_review,
@@ -103,12 +105,42 @@ def _build_bills(project: Project, year: int, mon: int, label: str):
 
 def _render_month(project: Project, bills, year: int, mon: int, label: str, draft: bool, merged_name: str,
                   summary_name: str | None) -> tuple[Path, Path | None]:
-    out_dir = project.output_dir(label)
+    out = project.output(label)
+    # ร่างไปที่ drafts/ ทั้งหมด ; ของจริง: ใบเสร็จรายบิล → 2-receipts/, ไฟล์รวม + ใบสรุป → 1-send/
+    receipts_dir, send_dir = (out.drafts, out.drafts) if draft else (out.receipts, out.send)
     renderer = Renderer(project.templates_dir, project.settings)
-    files = [renderer.render(b, out_dir / f"receipt_{b.no}.pdf", draft=draft) for b in bills]
-    merged = merge_pdfs(files, out_dir / merged_name)
-    summary = renderer.render_summary(bills, year, mon, out_dir / summary_name, draft=draft) if summary_name else None
+    files = [renderer.render(b, receipts_dir / f"receipt_{b.no}.pdf", draft=draft) for b in bills]
+    merged = merge_pdfs(files, send_dir / merged_name)
+    summary = renderer.render_summary(bills, year, mon, send_dir / summary_name, draft=draft) if summary_name else None
+    if not draft:  # ไฟล์ Word คู่กับ PDF ให้ admin แก้เองได้
+        word = DocxRenderer(project.settings)
+        for b in bills:
+            word.render([b], receipts_dir / f"receipt_{b.no}.docx")
+        word.render(bills, merged.with_suffix(".docx"))
+        if summary:
+            word.render_summary(bills, year, mon, summary.with_suffix(".docx"))
     return merged, summary
+
+
+def archive_previous(out: MonthOutput, work_dir: Path) -> Path | None:
+    """ก่อนออกบิลซ้ำ (--force): ย้ายชุดเดิมใน 1-send/ + 2-receipts/ ไป archive/<วันที่ออกชุดเดิม>/
+    พร้อมสำเนา review.csv ที่ใช้ออกชุดนั้น (finalized-review.csv) และ finalized.json ไว้เป็นหลักฐาน"""
+    done_path = work_dir / "finalized.json"
+    if not done_path.exists():
+        return None
+    done = json.loads(done_path.read_text("utf-8"))
+    base = out.archive / done["finalized_at"][:10]
+    dest, n = base, 2
+    while dest.exists():
+        dest, n = base.with_name(f"{base.name}-{n}"), n + 1
+    dest.mkdir(parents=True)
+    for folder in (out.send, out.receipts):
+        for f in sorted(folder.glob("*")) if folder.exists() else []:
+            shutil.move(str(f), dest / f.name)
+    for src, name in ((work_dir / "finalized-review.csv", "review.csv"), (done_path, done_path.name)):
+        if src.exists():
+            shutil.copy2(src, dest / name)
+    return dest
 
 
 @app.command()
@@ -141,6 +173,8 @@ def finalize(
         raise typer.Exit(1)
     last_no = read_counter(project.counter_path)
     new_last = assign_numbers(bills, last_no, dry_run)
+    if not dry_run and (archived := archive_previous(project.output(label), project.work_dir(label))):
+        typer.echo(f"↪ เก็บชุดเดิมไว้ที่ {archived.relative_to(project.root)}")
 
     today = date.today().isoformat()
     suffix = "-DRAFT" if dry_run else ""
@@ -159,6 +193,7 @@ def finalize(
             "bills": [b.no for b in bills], "finalized_at": datetime.now().isoformat(timespec="seconds"),
             "file": merged.name, "summary_file": summary.name if summary else None,
         }, ensure_ascii=False), "utf-8")
+        shutil.copy2(review_path, done_path.with_name("finalized-review.csv"))  # ไว้เก็บเข้า archive ถ้าออกซ้ำ
         typer.echo(f"เรียนรู้ alias ใหม่: {learned}")
 
     for b in bills:
@@ -168,6 +203,8 @@ def finalize(
     typer.echo(f"✔ {merged.relative_to(project.root)}")
     if summary:
         typer.echo(f"✔ {summary.relative_to(project.root)} (ใบสรุปเดือน)")
+    if not dry_run:
+        typer.echo("✔ ไฟล์ Word (.docx) คู่กับ PDF ทุกไฟล์ — ให้ admin แก้เองได้")
     typer.echo("\nข้อความสำหรับส่ง LINE:\n" + lot_message(year, mon, [b.no for b in bills]))
 
 
@@ -192,6 +229,7 @@ def reprint(month: MonthArg):
     typer.echo(f"✔ พิมพ์ใหม่ {', '.join('#' + n for n in done['bills'])} → {merged.relative_to(project.root)}")
     if summary:
         typer.echo(f"✔ {summary.relative_to(project.root)} (ใบสรุปเดือน)")
+    typer.echo("✔ ไฟล์ Word (.docx) คู่กับ PDF ทุกไฟล์")
 
 
 def lot_message(year: int, mon: int, numbers: list[str]) -> str:

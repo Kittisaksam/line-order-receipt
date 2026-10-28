@@ -4,7 +4,7 @@ import pytest
 
 from arma.parse_line import parse_file, parse_text
 
-from .conftest import CHAT, ROOT, requires_data
+from .conftest import CHAT, FIXTURES, ROOT, requires_data
 
 SAMPLE = (
     '[LINE] ประวัติการแชท\r\n\r\n'
@@ -64,7 +64,7 @@ def test_parse_text_dotted_format():
     assert df.is_system.tolist() == [False, True, False, True]  # "สติกเกอร์" / "รูป" ไม่มีวงเล็บ
 
 
-TAB_OCT = ROOT / "input" / "2569-10" / "line_export_1-7.txt"
+TAB_OCT = FIXTURES / "line_export_2569-10_1-7_tab.txt"
 DOTTED_OCT = ROOT / "data" / "[LINE]สั่งงานตัด อะคริลิค ฟิล์ม.txt"
 
 

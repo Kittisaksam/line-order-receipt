@@ -25,4 +25,5 @@ master/aliases.xlsx
 master/aliases.*.xlsx
 master/history.csv
 tests/fixtures/*.csv
+tests/fixtures/*.txt
 2026-09-30-line-order-to-receipt-plan.md

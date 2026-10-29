@@ -144,6 +144,7 @@ def build_products(docx_path: Path, normalizer: Normalizer) -> pd.DataFrame:
     for pid, name, part in [
         ("SV-SHIPPING", "ค่าบริการจัดส่ง", "ค่าส่ง"),
         ("SV-DESIGN", "งานออกแบบและสั่งทำไฟล์", "ค่าออกแบบ"),
+        ("SV-CLAIM", "งานเคลม", "เคลม"),
     ]:
         rows.append({
             "product_id": pid, "category": "service", "receipt_name": name,
